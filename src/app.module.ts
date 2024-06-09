@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { OsrsWikiApiModule } from './domains/_external/osrs-wiki-api/osrs-wiki-api.module';
+import { WoodcuttingModule } from './domains/skills/woodcutting/woodcutting.module';
+import { AppLoggerMiddleware } from './middlewares/app-logger.middleware';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [WoodcuttingModule, OsrsWikiApiModule],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AppLoggerMiddleware).forRoutes('*');
+  }
+}
