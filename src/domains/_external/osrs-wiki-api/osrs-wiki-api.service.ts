@@ -1,37 +1,55 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { Tree } from 'src/domains/skills/woodcutting/types/tree.type';
-import { GetCategoryMembersApiResponse } from './types/get-category-members-api-response.type';
 import { firstValueFrom } from 'rxjs';
-import { GetPagesApiResponse } from './types/get-pages-api-response.type';
+import { Tree } from 'src/domains/skills/woodcutting/types/tree.type';
 import { TREES_TO_FETCH } from './const/trees-to-fetch';
+import { OsrsContentSerializers } from './serializers/osrs-content.serializers';
+import { GetPagesApiResponse } from './types/get-pages-api-response.type';
+import { OsrsFetchedResource } from './types/osrs-fetched-ressource.type';
 
 @Injectable()
 export class OsrsWikiApiService {
   #apiUrl = 'https://oldschool.runescape.wiki/api.php';
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly osrsContentSerializers: OsrsContentSerializers,
+  ) {}
 
   async fetchTrees(): Promise<Tree[]> {
     const fetchedTreesDetails = await this.#fetchDetailsFromIds(TREES_TO_FETCH);
 
-    return TREES_TO_FETCH.map((treeId): Tree => {
-      const pageInfos = fetchedTreesDetails.find(
-        (page) => treeId === page.pageid,
-      );
-      const treeInfo = this.#extractContent(
-        pageInfos.revisions[0].slots.main.content,
-      );
-      return {
-        id: treeId,
-        name: treeInfo.name,
-        image: treeInfo.image,
-        reward: {
-          items: [],
-          experience: treeInfo.experience,
-        },
-      };
-    });
+    const treesWithoutFetchedRewardItems = TREES_TO_FETCH.map(
+      (treeId): OsrsFetchedResource => {
+        const pageInfos = fetchedTreesDetails.find(
+          (page) => treeId === page.pageid,
+        );
+        const treeContent = pageInfos.revisions[0].slots.main.content;
+
+        return {
+          id: treeId,
+          content: treeContent,
+          rewardItemsTitles:
+            this.osrsContentSerializers.getRewardItemsIdFromContent(
+              treeContent,
+            ),
+        };
+      },
+    );
+
+    const itemsIdsToFetch = [
+      ...new Set(
+        treesWithoutFetchedRewardItems.flatMap(
+          (tree) => tree.rewardItemsTitles,
+        ),
+      ),
+    ];
+
+    const fetchedRewardItems =
+      await this.#fetchDetailsFromTitles(itemsIdsToFetch);
+    return treesWithoutFetchedRewardItems.map((tree) =>
+      this.osrsContentSerializers.toFarmable(tree, fetchedRewardItems),
+    );
   }
 
   async #fetchDetailsFromIds(
@@ -56,29 +74,26 @@ export class OsrsWikiApiService {
     return data.query.pages;
   }
 
-  #extractContent(content: string): {
-    experience?: number;
-    image: string;
-    name: string;
-  } {
-    const imagePattern = /image1? = \[\[File:\s*([^|]+)/;
-
-    const imageMatch = imagePattern.exec(content);
-
-    return {
-      name: this.#getKeyFromContent('name', content),
-      experience: parseInt(this.#getKeyFromContent('xp', content), 10),
-      image:
-        'https://oldschool.runescape.wiki/images/' +
-        imageMatch[1].replace(/\s/g, '_'),
+  async #fetchDetailsFromTitles(
+    pageIds: string[],
+  ): Promise<GetPagesApiResponse['query']> {
+    const detailParams = {
+      action: 'query',
+      prop: 'revisions',
+      iwurl: 1,
+      rvprop: 'content',
+      titles: pageIds.join('|'),
+      rvslots: 'main',
+      format: 'json',
+      formatversion: 'latest',
     };
-  }
 
-  #getKeyFromContent(keyRegex: string, content: string): string | null {
-    const pattern = new RegExp(String.raw`${keyRegex} =\s*(.+)\n`);
-    const patternMatch = pattern.exec(content);
+    const { data } = await firstValueFrom(
+      this.httpService.get<GetPagesApiResponse>(`${this.#apiUrl}`, {
+        params: detailParams,
+      }),
+    );
 
-    if (patternMatch) return patternMatch[1];
-    else return null;
+    return data.query;
   }
 }
