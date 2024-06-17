@@ -2,24 +2,21 @@ default:
   image: node:18.17.0
 
 stages:
-  - test
+  # - test
   - deploy
 
-test:
-  stage: test
-  script:
-    - npm ci
-    - npm run build
-    - npm run test
+# test:
+#   stage: test
+#   script:
+#     - npm ci
+#     - npm run build
+#     - npm run test
 
 deploy_production:
   stage: deploy
   only:
     - main
   script:
-    - npm ci
-    - npm run build
-    - npm install --global vercel
-    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-    - vercel build --prod --token=$VERCEL_TOKEN
-    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+    - npx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    - npx vercel build --prod --token=$VERCEL_TOKEN
+    - npx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN

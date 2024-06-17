@@ -18,8 +18,13 @@ export default defineConfig({
   debug: process.env.NODE_ENV === 'develop',
   logger: logger.log.bind(logger),
   extensions: [Migrator],
-
+  ...(process.env.NODE_ENV === 'production' && {
+    driverOptions: {
+      connection: { ssl: true },
+    },
+  }),
   migrations: {
+    disableForeignKeys: false,
     path: 'dist/migrations',
     pathTs: 'src/migrations',
   },

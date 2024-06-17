@@ -23,7 +23,10 @@ async function bootstrap() {
     credentials: true,
   });
   app.use(cookieParser(process.env.COOKIE_SECRET));
+  const port = parseInt(process.env.PORT) | 3000;
+  console.log(port);
+  await app.listen(port);
 
-  await app.listen(parseInt(process.env.PORT) | 3001);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
