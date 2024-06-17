@@ -9,7 +9,7 @@ import { OsrsFetchedResource } from './types/osrs-fetched-ressource.type';
 
 @Injectable()
 export class OsrsWikiApiService {
-  #apiUrl = 'https://oldschool.runescape.wiki/api.php';
+  #apiUrl = process.env.OSRS_API_URL;
 
   constructor(
     private readonly httpService: HttpService,
