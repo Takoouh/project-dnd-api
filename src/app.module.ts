@@ -6,11 +6,13 @@ import { WoodcuttingModule } from './domains/skills/woodcutting/woodcutting.modu
 import { UsersModule } from './domains/users/users.module';
 import { AppLoggerMiddleware } from './middlewares/app-logger.middleware';
 import { AuthenticationModule } from './domains/authentication/authentication.module';
+import { HealthModule } from './domains/health/health.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MikroOrmModule.forRoot(),
+    HealthModule,
     UsersModule,
     AuthenticationModule,
     WoodcuttingModule,
