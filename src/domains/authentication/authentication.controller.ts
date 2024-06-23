@@ -15,11 +15,13 @@ import { PublicRoute } from './decorators/public-route.decorator';
 
 @Controller('')
 export class AuthenticationController {
+  #isProd = this.configService.get('NODE_ENV') === 'production';
+
   #cookiesOptions = {
     signed: true,
     httpOnly: true,
-    maxAge: 86400, //24h
-    secure: this.configService.get('NODE_ENV') === 'PRODUCTION',
+    sameSite: 'none' as 'none', // TS doesn't like 'none' alone
+    secure: this.#isProd,
   };
 
   constructor(

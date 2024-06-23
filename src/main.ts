@@ -24,7 +24,6 @@ async function bootstrap() {
   });
   app.use(cookieParser(process.env.COOKIE_SECRET));
   const port = parseInt(process.env.PORT) | 3000;
-  console.log(port);
   await app.listen(port);
 
   console.log(`Application is running on: ${await app.getUrl()}`);

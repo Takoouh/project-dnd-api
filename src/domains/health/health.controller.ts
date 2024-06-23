@@ -8,10 +8,7 @@ import { PublicRoute } from '../authentication/decorators/public-route.decorator
 
 @Controller('health')
 export class HealthController {
-  constructor(
-    private health: HealthCheckService,
-    private http: HttpHealthIndicator,
-  ) {}
+  constructor() {}
 
   @Get()
   @PublicRoute()
