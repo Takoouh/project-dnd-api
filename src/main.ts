@@ -1,7 +1,6 @@
+import { MikroORM } from '@mikro-orm/postgresql';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { MikroORM } from '@mikro-orm/postgresql';
-import * as cookieParser from 'cookie-parser';
 
 import 'dotenv/config';
 
@@ -22,7 +21,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
-  app.use(cookieParser(process.env.COOKIE_SECRET));
+
   const port = parseInt(process.env.PORT) | 3000;
   await app.listen(port);
 

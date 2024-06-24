@@ -4,6 +4,7 @@ import { AuthenticationService } from '../authentication.service';
 import { UsersService } from 'src/domains/users/users.service';
 import { LoginInfos } from '../types/login-infos.type';
 import { SignInError } from '../exceptions/sign-in-error.exception';
+import { LoginResponse } from '../dto/login-response.dto';
 
 @Injectable()
 export class SignInUseCase {
@@ -13,7 +14,7 @@ export class SignInUseCase {
     private readonly jwtService: JwtService,
   ) {}
 
-  public async execute(loginInfos: LoginInfos): Promise<Record<string, any>> {
+  public async execute(loginInfos: LoginInfos): Promise<LoginResponse> {
     const user = await this.usersService.getUser(loginInfos.nickname);
     if (!user) {
       throw new SignInError();
@@ -29,12 +30,12 @@ export class SignInUseCase {
       throw new SignInError();
     }
 
-    const access_token = await this.jwtService.signAsync({
+    const accessToken = await this.jwtService.signAsync({
       userId: user.id,
     });
     return {
       user,
-      access_token,
+      accessToken,
     };
   }
 }

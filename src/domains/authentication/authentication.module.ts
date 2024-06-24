@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
+import { AuthGuard } from './guards/auth.guard';
 import { SignInUseCase } from './use-cases/sign-in.use-case';
 import { SignUpUseCase } from './use-cases/sign-up.use-case';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './guards/auth.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {

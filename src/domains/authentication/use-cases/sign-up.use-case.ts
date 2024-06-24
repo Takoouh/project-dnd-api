@@ -4,6 +4,7 @@ import { UsersService } from 'src/domains/users/users.service';
 import { AuthenticationService } from '../authentication.service';
 import { LoginInfos } from '../types/login-infos.type';
 import { NicknameAlreadyTaken } from '../exceptions/nickname-taken.exception';
+import { LoginResponse } from '../dto/login-response.dto';
 
 @Injectable()
 export class SignUpUseCase {
@@ -16,7 +17,7 @@ export class SignUpUseCase {
   public async execute({
     nickname,
     password,
-  }: LoginInfos): Promise<Record<string, any>> {
+  }: LoginInfos): Promise<LoginResponse> {
     // Check if nickname is taken
     const isNicknameAlreadyTaken = await this.usersService.getUser(nickname);
     if (isNicknameAlreadyTaken) {
@@ -33,7 +34,7 @@ export class SignUpUseCase {
     });
     return {
       user,
-      access_token: await this.jwtService.signAsync({ userId: user.id }),
+      accessToken: await this.jwtService.signAsync({ userId: user.id }),
     };
   }
 }
