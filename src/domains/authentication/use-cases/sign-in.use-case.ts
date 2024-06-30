@@ -15,7 +15,7 @@ export class SignInUseCase {
   ) {}
 
   public async execute(loginInfos: LoginInfos): Promise<LoginResponse> {
-    const user = await this.usersService.getUser(loginInfos.nickname);
+    const user = await this.usersService.getUserByNickname(loginInfos.nickname);
     if (!user) {
       throw new SignInError();
     }
@@ -33,8 +33,9 @@ export class SignInUseCase {
     const accessToken = await this.jwtService.signAsync({
       userId: user.id,
     });
+
     return {
-      user,
+      user: user.toObject(),
       accessToken,
     };
   }

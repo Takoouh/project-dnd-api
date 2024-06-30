@@ -8,7 +8,7 @@ export class WoodcuttingController {
 
   @HttpCode(HttpStatus.OK)
   @Get('/trees')
-  async getTrees(): Promise<{ trees: Tree[] }> {
+  getTrees(): Promise<{ trees: Tree[] }> {
     return this.getTreesUseCase.execute();
   }
 }

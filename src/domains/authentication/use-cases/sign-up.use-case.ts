@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/domains/users/users.service';
 import { AuthenticationService } from '../authentication.service';
-import { LoginInfos } from '../types/login-infos.type';
-import { NicknameAlreadyTaken } from '../exceptions/nickname-taken.exception';
 import { LoginResponse } from '../dto/login-response.dto';
+import { NicknameAlreadyTaken } from '../exceptions/nickname-taken.exception';
+import { LoginInfos } from '../types/login-infos.type';
 
 @Injectable()
 export class SignUpUseCase {
@@ -19,7 +19,8 @@ export class SignUpUseCase {
     password,
   }: LoginInfos): Promise<LoginResponse> {
     // Check if nickname is taken
-    const isNicknameAlreadyTaken = await this.usersService.getUser(nickname);
+    const isNicknameAlreadyTaken =
+      await this.usersService.getUserByNickname(nickname);
     if (isNicknameAlreadyTaken) {
       throw new NicknameAlreadyTaken();
     }
@@ -33,7 +34,7 @@ export class SignUpUseCase {
       password: hashedPassword,
     });
     return {
-      user,
+      user: user.toObject(),
       accessToken: await this.jwtService.signAsync({ userId: user.id }),
     };
   }
