@@ -16,7 +16,11 @@ export class UsersService {
     return user;
   }
 
-  async getUser(nickname: string): Promise<User> {
+  async getUserById(userId: string): Promise<User> {
+    return this.userRepository.findOne({ id: userId });
+  }
+
+  async getUserByNickname(nickname: string): Promise<User> {
     return this.userRepository.findOne({ nickname });
   }
 }

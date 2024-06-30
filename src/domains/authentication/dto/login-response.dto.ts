@@ -1,6 +1,6 @@
-import { User } from 'src/domains/users/entities/user.entity';
+import { UserDto } from 'src/domains/users/dto/user.dto';
 
 export class LoginResponse {
-  user: User;
+  user: UserDto;
   accessToken: string;
 }

@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OsrsWikiApiService } from 'src/domains/_external/osrs-wiki-api/osrs-wiki-api.service';
 import * as request from 'supertest';
@@ -45,13 +45,9 @@ describe('E2E - Get Trees', () => {
       .mockResolvedValue([tree1, tree2]);
 
     //THEN
-    const response = await request(app.getHttpServer()).get(
-      '/skills/woodcutting/trees',
-    );
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      trees: [tree1, tree2],
-    });
+    await request(app.getHttpServer())
+      .get('/skills/woodcutting/trees')
+      .expect(200)
+      .expect(JSON.stringify({ trees: [tree1, tree2] }));
   });
 });
