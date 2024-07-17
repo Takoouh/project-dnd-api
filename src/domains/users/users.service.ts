@@ -23,4 +23,11 @@ export class UsersService {
   async getUserByNickname(nickname: string): Promise<User> {
     return this.userRepository.findOne({ nickname });
   }
+
+  async moveUserToArea(userId: string, areaId: string): Promise<User> {
+    const user = await this.getUserById(userId);
+    user.moveTo(areaId);
+    await this.userRepository.getEntityManager().persistAndFlush(user);
+    return user;
+  }
 }

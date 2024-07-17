@@ -5,7 +5,7 @@ import { LoginInfos } from './types/login-infos.type';
 import { SignInUseCase } from './use-cases/sign-in.use-case';
 import { SignUpUseCase } from './use-cases/sign-up.use-case';
 
-@Controller('')
+@Controller('authentication')
 export class AuthenticationController {
   constructor(
     private readonly signUpUseCase: SignUpUseCase,

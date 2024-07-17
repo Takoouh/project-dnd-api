@@ -1,7 +1,4 @@
 import { MikroORM } from '@mikro-orm/core';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
-import { INestApplication } from '@nestjs/common';
-import { TestingModule } from '@nestjs/testing';
 
 let orm: MikroORM;
 beforeAll(async () => {

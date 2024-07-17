@@ -8,6 +8,118 @@
       "columns": {
         "id": {
           "name": "id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "area_group": {
+          "name": "area_group",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "town",
+            "stratia-dungeon",
+            "wilderness"
+          ],
+          "mappedType": "enum"
+        },
+        "is_available": {
+          "name": "is_available",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "trees": {
+          "name": "trees",
+          "type": "text[]",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'{}'",
+          "mappedType": "array"
+        },
+        "mining_rocks": {
+          "name": "mining_rocks",
+          "type": "text[]",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'{}'",
+          "mappedType": "array"
+        },
+        "monsters": {
+          "name": "monsters",
+          "type": "text[]",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'{}'",
+          "mappedType": "array"
+        },
+        "has_inn": {
+          "name": "has_inn",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "unlocked_by": {
+          "name": "unlocked_by",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        }
+      },
+      "name": "areas",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "areas_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -32,6 +144,16 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "mappedType": "string"
+        },
+        "location": {
+          "name": "location",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'sunset-town'",
           "mappedType": "string"
         },
         "cooking_xp": {
@@ -85,7 +207,7 @@
           "mappedType": "integer"
         }
       },
-      "name": "user",
+      "name": "users",
       "schema": "public",
       "indexes": [
         {
@@ -93,13 +215,13 @@
             "nickname"
           ],
           "composite": false,
-          "keyName": "user_nickname_unique",
+          "keyName": "users_nickname_unique",
           "constraint": true,
           "primary": false,
           "unique": true
         },
         {
-          "keyName": "user_pkey",
+          "keyName": "users_pkey",
           "columnNames": [
             "id"
           ],
@@ -154,11 +276,11 @@
           "mappedType": "integer"
         }
       },
-      "name": "user_item",
+      "name": "user_items",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "user_item_pkey",
+          "keyName": "user_items_pkey",
           "columnNames": [
             "id"
           ],
@@ -170,16 +292,16 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "user_item_user_id_foreign": {
-          "constraintName": "user_item_user_id_foreign",
+        "user_items_user_id_foreign": {
+          "constraintName": "user_items_user_id_foreign",
           "columnNames": [
             "user_id"
           ],
-          "localTableName": "public.user_item",
+          "localTableName": "public.user_items",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.user",
+          "referencedTableName": "public.users",
           "updateRule": "cascade"
         }
       },

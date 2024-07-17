@@ -7,6 +7,7 @@ import { UsersModule } from './domains/users/users.module';
 import { AppLoggerMiddleware } from './middlewares/app-logger.middleware';
 import { AuthenticationModule } from './domains/authentication/authentication.module';
 import { HealthModule } from './domains/health/health.module';
+import { AreasModule } from './domains/areas/areas.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { HealthModule } from './domains/health/health.module';
     HealthModule,
     UsersModule,
     AuthenticationModule,
+    AreasModule,
     WoodcuttingModule,
     OsrsWikiApiModule,
   ],

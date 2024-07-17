@@ -6,7 +6,7 @@ import { AuthGuardMock } from 'src/domains/authentication/guards/mock/auth.guard
 import { UsersModule } from 'src/domains/users/users.module';
 import * as request from 'supertest';
 
-describe('E2E - Get current user when sucess', () => {
+describe('E2E - Move user to location when area does not exist', () => {
   let module: TestingModule;
   let app: INestApplication;
   beforeAll(async () => {
@@ -30,25 +30,23 @@ describe('E2E - Get current user when sucess', () => {
     await module.close();
   });
 
-  it('should return user when there is a match in db', async () => {
+  it('should return Forbidden exception', async () => {
+    //GIVEN
+    const areaId = 'place-not-existing';
+
     //WHEN
     const token = { userId: '86b79cae-cb7c-4c32-8326-b9d279982b20' };
+
     //THEN
     await request(app.getHttpServer())
-      .get('/users/me')
+      .patch(`/users/me/move/${areaId}`)
       .set('Authorization', JSON.stringify(token))
-      .expect(HttpStatus.OK)
+      .expect(HttpStatus.FORBIDDEN)
       .expect(
         JSON.stringify({
-          nickname: 'test-user',
-          location: 'sunset-town',
-          skills: {
-            cooking: { xp: 0, level: 1, nextLevelXp: 174 },
-            fishing: { xp: 0, level: 1, nextLevelXp: 174 },
-            mining: { xp: 0, level: 1, nextLevelXp: 174 },
-            smithing: { xp: 0, level: 1, nextLevelXp: 174 },
-            woodcutting: { xp: 0, level: 1, nextLevelXp: 174 },
-          },
+          message: "You can't go there !",
+          error: 'Forbidden',
+          statusCode: 403,
         }),
       );
   });
