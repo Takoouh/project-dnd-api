@@ -9,5 +9,10 @@ export class UserSeeder extends Seeder {
       password: 'test-password',
       id: '86b79cae-cb7c-4c32-8326-b9d279982b20',
     });
+    em.create(User, {
+      nickname: 'test-user-to-move',
+      password: 'test-password',
+      id: '76b79cae-cb7c-4c32-8326-b9d279982b21',
+    });
   }
 }

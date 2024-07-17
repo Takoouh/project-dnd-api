@@ -4,6 +4,7 @@ import { UsersService } from '../../users.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@mikro-orm/nestjs';
 import { User } from '../../entities/user.entity';
+import { UserMockBuilder } from '../mock/user-mock-builder';
 
 describe('UsersService', () => {
   const persistAndFlushSpy = jest.fn();
@@ -78,6 +79,22 @@ describe('UsersService', () => {
       const result = await usersService.getUserByNickname(nickname);
       expect(findOneSpy).toHaveBeenCalledWith({ nickname });
       expect(result).toEqual(user);
+    });
+  });
+
+  describe('moveUserToArea', () => {
+    it('should move user to given location', async () => {
+      //GIVEN
+      const userId = 'test-user';
+      const areaId = 'test-location';
+
+      //WHEN
+      const user = new UserMockBuilder('userTest').withLocation('somewhere');
+      findOneSpy.mockResolvedValue(user);
+
+      //THEN
+      const movedUser = await usersService.moveUserToArea(userId, areaId);
+      expect(movedUser.location).toEqual(areaId);
     });
   });
 });

@@ -11,7 +11,7 @@ import { UserDto } from '../dto/user.dto';
 import { UserSkillDetail } from '../types/user-skill-detail.type';
 import { UserItem } from './user-item.entity';
 
-@Entity()
+@Entity({ tableName: 'users' })
 export class User {
   @PrimaryKey({ type: 'uuid', defaultRaw: 'gen_random_uuid()', hidden: true })
   id: string;
@@ -24,6 +24,9 @@ export class User {
 
   @OneToMany('UserItem', 'user')
   userItems = new Collection<UserItem>(this);
+
+  @Property({ default: 'sunset-town' })
+  location: string = 'sunset-town';
 
   //SKILLS
   @Property({ hidden: true, default: 0 })
@@ -49,6 +52,7 @@ export class User {
   public toObject(): UserDto {
     return {
       nickname: this.nickname,
+      location: this.location,
       skills: {
         cooking: this.getSkillInfo(this.cookingXp),
         fishing: this.getSkillInfo(this.fishingXp),
@@ -69,5 +73,9 @@ export class User {
       level: currentLevel,
       nextLevelXp: nextLevelXp,
     };
+  }
+
+  public moveTo(areaId: string): void {
+    this.location = areaId;
   }
 }

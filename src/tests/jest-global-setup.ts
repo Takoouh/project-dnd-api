@@ -1,6 +1,7 @@
 import { MikroORM } from '@mikro-orm/postgresql';
 import { UserSeeder } from '../seeders/UserSeeder';
 import 'tsconfig-paths/register';
+import { AreasSeeder } from 'src/seeders/AreasSeeder';
 //eslint-disable-next-line
 require('dotenv').config({ path: './.env.test' });
 
@@ -30,6 +31,7 @@ module.exports = async function () {
 
   // Seed using a seeder defined by you
   await seeder.seed(UserSeeder);
+  await seeder.seed(AreasSeeder);
 
   await orm?.close(true);
 };
